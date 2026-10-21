@@ -15,7 +15,7 @@ class JournalController extends Controller
 {
     public function index(Request $request)
     {
-        $journals = Journal::with(['details.chartOfAccount', 'creator'])
+        $journals = Journal::with(['details.account', 'creator'])
             ->orderBy('journal_date', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(15);

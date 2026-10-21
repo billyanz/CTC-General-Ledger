@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,16 @@ class UserController extends Controller
             'name'        => 'required|string|max:255',
             'email'       => 'required|email|unique:users,email',
             'password'    => 'required|min:6',
-            'role'        => 'required|string|exists:roles,name',
+            'role'        => [
+                'required',
+                'string',
+                'exists:roles,name',
+                static function (string $attribute, mixed $value, Closure $fail): void {
+                    if (is_string($value) && strcasecmp($value, 'admin') === 0) {
+                        $fail('Role admin tidak dapat diberikan.');
+                    }
+                },
+            ],
             'base_salary' => 'nullable|numeric|min:0',
         ]);
 
@@ -51,7 +61,16 @@ class UserController extends Controller
         $request->validate([
             'name'        => 'required|string|max:255',
             'email'       => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'role'        => 'required|string|exists:roles,name',
+            'role'        => [
+                'required',
+                'string',
+                'exists:roles,name',
+                static function (string $attribute, mixed $value, Closure $fail) use ($user): void {
+                    if (! $user->hasRole('admin') && is_string($value) && strcasecmp($value, 'admin') === 0) {
+                        $fail('Role admin tidak dapat diberikan.');
+                    }
+                },
+            ],
             'base_salary' => 'nullable|numeric|min:0',
             'is_active'   => 'required|boolean',
         ]);

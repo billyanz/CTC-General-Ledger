@@ -9,7 +9,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
         <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold text-gray-800">Sistem Keuanga CTC</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Sistem Keuangan CTC</h2>
             <p class="text-sm text-gray-500 mt-1">Silakan masuk ke akun Anda</p>
         </div>
 
