@@ -46,10 +46,7 @@ class GeneralLedgerReportController extends Controller
             $selectedAccount = ChartOfAccount::findOrFail($accountId);
 
             // 1. Hitung Saldo Awal (Opening Balance) sebelum $startDate
-            $totalsPrev = JournalDetail::where(function($q) use ($accountId) {
-                    $q->where('chart_of_account_id', $accountId)
-                      ->orWhere('account_id', $accountId);
-                })
+            $totalsPrev = JournalDetail::where('account_id', $accountId)
                 ->whereHas('journal', function ($q) use ($startDate) {
                     $q->where('journal_date', '<', $startDate)
                       ->where('status', 'posted');
@@ -70,10 +67,7 @@ class GeneralLedgerReportController extends Controller
 
             // 2. Ambil Transaksi Jurnal dalam Rentang Periode
             $ledgerEntries = JournalDetail::with('journal')
-                ->where(function($q) use ($accountId) {
-                    $q->where('chart_of_account_id', $accountId)
-                      ->orWhere('account_id', $accountId);
-                })
+                ->where('account_id', $accountId)
                 ->whereHas('journal', function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('journal_date', [$startDate, $endDate])
                       ->where('status', 'posted');

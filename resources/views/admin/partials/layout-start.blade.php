@@ -1,6 +1,8 @@
-<aside class="ctc-sidebar">
+<aside class="ctc-sidebar" x-data="{ sidebarOpen: false }" @toggle-sidebar.window="sidebarOpen = !sidebarOpen" :class="sidebarOpen ? 'is-mobile-open' : ''">
     <a href="{{ route('dashboard') }}" class="ctc-brand">
-        <span class="ctc-brand-mark">C</span>
+        <span class="ctc-brand-mark flex items-center justify-center overflow-hidden !bg-transparent !border-0 !shadow-none p-0">
+            <img src="{{ asset('images/logo_CTC.png') }}" alt="CTC Logo" class="w-full h-full object-contain">
+        </span>
         <span>
             <strong>CTC Finance</strong>
             <small>General Ledger</small>
@@ -8,10 +10,12 @@
     </a>
 
     <nav class="ctc-navigation" aria-label="Navigasi utama">
+        {{-- Ringkasan (Semua Role) --}}
         <a href="{{ route('dashboard') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('dashboard')])>
             <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Ringkasan
         </a>
 
+        {{-- MASTER DATA (HANYA ADMIN) --}}
         @role('admin')
             <p class="ctc-nav-group">Master data</p>
             <a href="{{ route('admin.users.index') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.users.*')])>
@@ -22,6 +26,7 @@
             </a>
         @endrole
 
+        {{-- AKUNTANSI (ADMIN & AKUNTAN SAJA) --}}
         @hasanyrole('admin|akuntan')
             <p class="ctc-nav-group">Akuntansi</p>
             @can('manage-journals')
@@ -46,18 +51,22 @@
             @endcan
         @endhasanyrole
 
-        <p class="ctc-nav-group">Operasional</p>
-        @can('manage-cash-transactions')
-            <a href="{{ route('admin.cash-transactions.index') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.cash-transactions.*')])>
-                <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18m-5 5h2M7 6V4h12"/></svg></span> Transaksi kas
-            </a>
-        @endcan
-        @can('manage-payrolls')
-            <a href="{{ route('admin.payrolls.index') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.payrolls.*')])>
-                <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h4m-4 4h2m5-2h3m-3 3h3"/></svg></span> Penggajian
-            </a>
-        @endcan
+        {{-- OPERASIONAL (ADMIN, AKUNTAN, DAN STAFF) --}}
+        @hasanyrole('admin|akuntan|staff')
+            <p class="ctc-nav-group">Operasional</p>
+            @can('manage-cash-transactions')
+                <a href="{{ route('admin.cash-transactions.index') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.cash-transactions.*')])>
+                    <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18m-5 5h2M7 6V4h12"/></svg></span> Transaksi kas
+                </a>
+            @endcan
+            @can('manage-payrolls')
+                <a href="{{ route('admin.payrolls.index') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.payrolls.*')])>
+                    <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h4m-4 4h2m5-2h3m-3 3h3"/></svg></span> Penggajian
+                </a>
+            @endcan
+        @endhasanyrole
 
+        {{-- LAPORAN (ADMIN & AKUNTAN SAJA - PAJAK & PENGGAJIAN DIHAPUS) --}}
         @hasanyrole('admin|akuntan')
             <p class="ctc-nav-group">Laporan</p>
             @can('view-reports-general-ledger')
@@ -75,37 +84,48 @@
                     <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M7 6l-4 8h8L7 6Zm10 0-4 8h8l-4-8ZM5 21h14"/></svg></span> Neraca
                 </a>
             @endcan
-            @can('view-reports-tax')
-                <a href="{{ route('admin.reports.tax') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.reports.tax*')])>
-                    <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l3 3v15H4V6l3-3Zm3 6h4m-5 4h6m-6 4h4"/></svg></span> Pajak
-                </a>
-            @endcan
-            @can('view-reports-payroll')
-                <a href="{{ route('admin.reports.payroll') }}" @class(['ctc-nav-link', 'is-active' => request()->routeIs('admin.reports.payroll*')])>
-                    <span class="ctc-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16m-12-3v-4m5 4V8m5 8v-6"/></svg></span> Laporan penggajian
-                </a>
-            @endcan
         @endhasanyrole
     </nav>
 
     <div class="ctc-sidebar-footer">
-        <span class="ctc-user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-        <span class="ctc-user-details">
-            <strong>{{ auth()->user()->name }}</strong>
-            <small>{{ auth()->user()->getRoleNames()->first() ?? session('active_role', 'GUEST') }}</small>
-        </span>
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="ctc-logout" aria-label="Keluar sesi" title="Keluar sesi">↗</button>
-        </form>
+        <details class="ctc-user-menu">
+            <summary class="ctc-user-menu-trigger" aria-label="Menu pengguna">
+                <span class="ctc-user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                <span class="ctc-user-details">
+                    <strong>{{ auth()->user()->name }}</strong>
+                    <small>{{ auth()->user()->getRoleNames()->first() ?? session('active_role', 'GUEST') }}</small>
+                </span>
+                <svg class="ctc-user-menu-chevron" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="m5 7.5 5 5 5-5" />
+                </svg>
+            </summary>
+            <div class="ctc-user-menu-panel">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="ctc-logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
+                        </svg>
+                        <span>Keluar</span>
+                    </button>
+                </form>
+            </div>
+        </details>
     </div>
 </aside>
 
 <div class="ctc-admin-main">
     <header class="ctc-topbar">
-        <div>
-            <p class="ctc-topbar-eyebrow">CTC Finance</p>
-            <h1>{{ $pageTitle }}</h1>
+        <div class="flex items-center gap-3">
+            {{-- Tombol Hamburger Mobile di Pojok Kiri Topbar --}}
+            <button @click="$dispatch('toggle-sidebar')" class="ctc-mobile-toggle md:hidden p-1 text-slate-600 focus:outline-none" aria-label="Toggle menu">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+
+            <div>
+                <p class="ctc-topbar-eyebrow">CTC Finance</p>
+                <h1>{{ $pageTitle }}</h1>
+            </div>
         </div>
         <span class="ctc-topbar-role">{{ auth()->user()->getRoleNames()->first() ?? session('active_role', 'GUEST') }}</span>
     </header>
