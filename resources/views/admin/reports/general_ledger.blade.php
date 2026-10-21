@@ -2,8 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Buku Besar (General Ledger)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <style>
         @media print {
             .no-print { display: none !important; }
@@ -12,7 +13,8 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
+<body class="ctc-admin-layout">
+    @include('admin.partials.layout-start', ['pageTitle' => 'Buku besar'])
     <div class="max-w-6xl mx-auto space-y-6">
 
         <!-- Toolbar Filter (No Print) -->
@@ -152,5 +154,6 @@
         @endif
 
     </div>
+    @include('admin.partials.layout-end')
 </body>
 </html>

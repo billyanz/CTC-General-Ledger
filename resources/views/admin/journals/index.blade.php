@@ -2,160 +2,202 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Jurnal Umum & Reversal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Jurnal Umum &amp; Reversal</title>
+    @vite('resources/css/app.css')
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
-    <div class="max-w-7xl mx-auto space-y-6">
-
-        <!-- Header -->
-        <div class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm">
+<body class="ctc-admin-layout">
+    @include('admin.partials.layout-start', ['pageTitle' => 'Jurnal umum'])
+    <section class="ctc-workspace space-y-5">
+        <header class="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-7">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">Jurnal Umum & Reversal</h1>
-                <p class="text-sm text-gray-500">Pencatatan pembukuan berpasangan (Double-Entry Ledger)</p>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">Akuntansi</p>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Jurnal Umum &amp; Reversal</h1>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Pencatatan pembukuan berpasangan (double-entry ledger).</p>
             </div>
-            <a href="{{ route('dashboard') }}" class="text-sm bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium">Kembali ke Dashboard</a>
-        </div>
+            <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-blue-100 sm:w-auto">
+                <svg class="mr-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 1 1 1.06 1.06l-3.22 3.22h10.69A.75.75 0 0 1 17 10Z" clip-rule="evenodd"/>
+                </svg>
+                Kembali ke Dashboard
+            </a>
+        </header>
 
         @if(session('success'))
-            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-                {{ session('success') }}
+            <div role="status" class="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 text-sm text-emerald-800">
+                <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.78-9.72a.75.75 0 0 0-1.06-1.06L9 10.94 7.28 9.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.06 0l4.25-4.25Z" clip-rule="evenodd"/>
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if(session('error') || $errors->any())
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                <ul class="list-disc list-inside">
+            <div role="alert" class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3.5 text-sm text-rose-800">
+                <p class="mb-1 font-semibold">Periksa kembali informasi berikut:</p>
+                <ul class="list-inside list-disc space-y-1">
                     @if(session('error')) <li>{{ session('error') }}</li> @endif
                     @foreach($errors->all() as $err) <li>{{ $err }}</li> @endforeach
                 </ul>
             </div>
         @endif
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(19rem,0.85fr)_minmax(0,2fr)]">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="manual-journal-heading">
+                <div class="mb-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-blue-700">Entri baru</p>
+                    <h2 id="manual-journal-heading" class="mt-1 text-lg font-bold text-slate-900">Buat Jurnal Manual</h2>
+                    <p class="mt-1 text-sm text-slate-500">Isi akun debit dan kredit untuk mencatat transaksi.</p>
+                </div>
 
-            <!-- Form Input Jurnal Manual -->
-            <div class="bg-white p-6 rounded-xl shadow-sm h-fit space-y-4">
-                <h2 class="text-lg font-bold text-gray-800">Buat Jurnal Manual</h2>
-                <form action="{{ route('admin.journals.store') }}" method="POST" class="space-y-4">
+                <form action="{{ route('admin.journals.store') }}" method="POST" class="space-y-5">
                     @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Jurnal</label>
-                        <input type="date" name="journal_date" value="{{ date('Y-m-d') }}" required class="w-full px-3 py-2 border rounded-lg outline-none">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="journal-date" class="mb-1.5 block text-sm font-medium text-slate-700">Tanggal Jurnal</label>
+                            <input id="journal-date" type="date" name="journal_date" value="{{ date('Y-m-d') }}" required class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                        </div>
+
+                        <div>
+                            <label for="reference-number" class="mb-1.5 block text-sm font-medium text-slate-700">No. Referensi <span class="font-normal text-slate-400">(opsional)</span></label>
+                            <input id="reference-number" type="text" name="reference_number" placeholder="Misal: INV-001" class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                        </div>
+
+                        <div>
+                            <label for="journal-description" class="mb-1.5 block text-sm font-medium text-slate-700">Keterangan Jurnal</label>
+                            <textarea id="journal-description" name="description" rows="3" placeholder="Deskripsi transaksi..." required class="w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"></textarea>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">No. Referensi (Optional)</label>
-                        <input type="text" name="reference_number" placeholder="Misal: INV-001" class="w-full px-3 py-2 border rounded-lg outline-none">
-                    </div>
+                    <fieldset class="space-y-3 border-t border-slate-200 pt-5">
+                        <legend class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Baris Entri Jurnal</legend>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Keterangan Jurnal</label>
-                        <textarea name="description" rows="2" placeholder="Deskripsi transaksi..." required class="w-full px-3 py-2 border rounded-lg outline-none text-sm"></textarea>
-                    </div>
-
-                    <!-- Items Double-Entry Rows -->
-                    <div class="border-t pt-3 space-y-3">
-                        <label class="block text-xs font-bold text-gray-500 uppercase">Baris Entri Jurnal</label>
-
-                        <!-- Baris 1 (Debit) -->
-                        <div class="p-2 bg-gray-50 rounded border space-y-1">
-                            <select name="items[0][account_id]" required class="w-full px-2 py-1 border rounded text-xs">
+                        <div class="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+                            <div class="flex items-center gap-2">
+                                <span class="flex h-6 w-6 items-center justify-center rounded-md bg-blue-100 text-xs font-bold text-blue-700">1</span>
+                                <span class="text-sm font-semibold text-slate-800">Debit</span>
+                            </div>
+                            <select name="items[0][account_id]" aria-label="Pilih akun debit" required class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                                 <option value="">-- Pilih Akun Debit --</option>
                                 @foreach($accounts as $acc)
                                     <option value="{{ $acc->id }}">{{ $acc->code }} - {{ $acc->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="number" name="items[0][debit]" placeholder="Debit Rp" class="px-2 py-1 border rounded text-xs font-semibold">
-                                <input type="number" name="items[0][credit]" value="0" readonly class="px-2 py-1 border bg-gray-100 rounded text-xs">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="debit-amount" class="mb-1 block text-xs font-medium text-slate-500">Jumlah debit (Rp)</label>
+                                    <input id="debit-amount" type="number" name="items[0][debit]" placeholder="0" class="min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                                </div>
+                                <div>
+                                    <label for="debit-credit" class="mb-1 block text-xs font-medium text-slate-500">Kredit</label>
+                                    <input id="debit-credit" type="number" name="items[0][credit]" value="0" readonly aria-label="Kredit baris debit" class="min-h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500">
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Baris 2 (Kredit) -->
-                        <div class="p-2 bg-gray-50 rounded border space-y-1">
-                            <select name="items[1][account_id]" required class="w-full px-2 py-1 border rounded text-xs">
+                        <div class="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+                            <div class="flex items-center gap-2">
+                                <span class="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-100 text-xs font-bold text-emerald-700">2</span>
+                                <span class="text-sm font-semibold text-slate-800">Kredit</span>
+                            </div>
+                            <select name="items[1][account_id]" aria-label="Pilih akun kredit" required class="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
                                 <option value="">-- Pilih Akun Kredit --</option>
                                 @foreach($accounts as $acc)
                                     <option value="{{ $acc->id }}">{{ $acc->code }} - {{ $acc->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="number" name="items[1][debit]" value="0" readonly class="px-2 py-1 border bg-gray-100 rounded text-xs">
-                                <input type="number" name="items[1][credit]" placeholder="Kredit Rp" class="px-2 py-1 border rounded text-xs font-semibold">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="credit-debit" class="mb-1 block text-xs font-medium text-slate-500">Debit</label>
+                                    <input id="credit-debit" type="number" name="items[1][debit]" value="0" readonly aria-label="Debit baris kredit" class="min-h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500">
+                                </div>
+                                <div>
+                                    <label for="credit-amount" class="mb-1 block text-xs font-medium text-slate-500">Jumlah kredit (Rp)</label>
+                                    <input id="credit-amount" type="number" name="items[1][credit]" placeholder="0" class="min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition shadow-md">
+                    <button type="submit" class="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200">
                         Posting Jurnal
                     </button>
                 </form>
-            </div>
+            </section>
 
-            <!-- Tabel Daftar Jurnal & Tombol Reversal -->
-            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-gray-800">Daftar Jurnal Umum</h2>
+            <section class="min-w-0 space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="journal-list-heading">
+                <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-blue-700">Riwayat transaksi</p>
+                        <h2 id="journal-list-heading" class="mt-1 text-lg font-bold text-slate-900">Daftar Jurnal Umum</h2>
+                    </div>
+                    <p class="text-sm text-slate-500">Kelola dan tinjau jurnal yang tercatat.</p>
+                </div>
 
                 <div class="space-y-4">
                     @forelse($journals as $j)
-                        <div class="border rounded-xl p-4 bg-gray-50/50 space-y-3">
-                            <div class="flex justify-between items-start border-b pb-2">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-mono font-bold text-sm text-blue-600">{{ $j->journal_number }}</span>
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold {{ $j->status === 'posted' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        <article class="space-y-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                            <div class="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="font-mono text-sm font-bold text-blue-800">{{ $j->journal_number }}</span>
+                                        <span class="rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $j->status === 'posted' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200' : 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200' }}">
                                             {{ strtoupper($j->status) }}
                                         </span>
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-0.5">{{ $j->journal_date }} | Ref: {{ $j->reference_number ?? '-' }}</p>
+                                    <p class="mt-1.5 text-xs text-slate-500">{{ $j->journal_date }} <span class="mx-1 text-slate-300">|</span> Ref: {{ $j->reference_number ?? '-' }}</p>
                                 </div>
 
                                 @if($j->status === 'posted')
-                                    <form action="{{ route('admin.journals.reverse', $j->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin melakukan Reversal / Pembatalan pada jurnal ini?');">
+                                    <form action="{{ route('admin.journals.reverse', $j->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin melakukan Reversal / Pembatalan pada jurnal ini?');" class="shrink-0">
                                         @csrf
-                                        <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs px-2.5 py-1 rounded-lg font-medium transition">
-                                            🔄 Reverse / Batal
+                                        <button type="submit" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 transition-colors hover:bg-rose-50 focus:outline-none focus:ring-4 focus:ring-rose-100">
+                                            Reverse / Batal
                                         </button>
                                     </form>
                                 @endif
                             </div>
 
-                            <p class="text-xs text-gray-700 font-medium">{{ $j->description }}</p>
+                            <p class="break-words text-sm font-medium leading-6 text-slate-700">{{ $j->description }}</p>
 
-                            <!-- Items Table Detail -->
-                            <table class="w-full text-xs text-left bg-white rounded border">
-                                <thead>
-                                    <tr class="border-b bg-gray-100 text-gray-500 uppercase">
-                                        <th class="py-1.5 px-2">Kode & Akun</th>
-                                        <th class="py-1.5 px-2 text-right">Debit</th>
-                                        <th class="py-1.5 px-2 text-right">Kredit</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y">
-                                    @foreach($j->details as $d)
+                            <div class="overflow-x-auto rounded-lg border border-slate-200">
+                                <table class="w-full min-w-[32rem] text-left text-xs">
+                                    <thead class="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
                                         <tr>
-                                            <td class="py-1.5 px-2 {{ $d->credit > 0 ? 'pl-6' : '' }}">
-                                                {{ $d->account->code }} - {{ $d->account->name }}
-                                            </td>
-                                            <td class="py-1.5 px-2 text-right">{{ $d->debit > 0 ? 'Rp ' . number_format($d->debit, 0, ',', '.') : '-' }}</td>
-                                            <td class="py-1.5 px-2 text-right">{{ $d->credit > 0 ? 'Rp ' . number_format($d->credit, 0, ',', '.') : '-' }}</td>
+                                            <th scope="col" class="px-3 py-3 font-semibold">Kode &amp; Akun</th>
+                                            <th scope="col" class="px-3 py-3 text-right font-semibold">Debit</th>
+                                            <th scope="col" class="px-3 py-3 text-right font-semibold">Kredit</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 bg-white">
+                                        @foreach($j->details as $d)
+                                            <tr class="text-slate-600">
+                                                <td class="max-w-[18rem] break-words px-3 py-3 font-medium {{ $d->credit > 0 ? 'pl-7' : '' }}">
+                                                    {{ $d->account->code }} - {{ $d->account->name }}
+                                                </td>
+                                                <td class="whitespace-nowrap px-3 py-3 text-right tabular-nums">{{ $d->debit > 0 ? 'Rp ' . number_format($d->debit, 0, ',', '.') : '-' }}</td>
+                                                <td class="whitespace-nowrap px-3 py-3 text-right tabular-nums">{{ $d->credit > 0 ? 'Rp ' . number_format($d->credit, 0, ',', '.') : '-' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
                     @empty
-                        <div class="text-center py-8 text-gray-400 italic">Belum ada jurnal yang tercatat.</div>
+                        <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-12 text-center">
+                            <p class="text-sm font-medium text-slate-600">Belum ada jurnal yang tercatat.</p>
+                            <p class="mt-1 text-xs text-slate-500">Jurnal yang berhasil diposting akan tampil di sini.</p>
+                        </div>
                     @endforelse
                 </div>
 
-                <div class="pt-2">
+                <div class="overflow-x-auto border-t border-slate-100 pt-4">
                     {{ $journals->links() }}
                 </div>
-            </div>
-
+            </section>
         </div>
-    </div>
+    </section>
+    @include('admin.partials.layout-end')
 </body>
 </html>

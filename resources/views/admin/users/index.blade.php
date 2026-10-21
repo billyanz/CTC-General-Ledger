@@ -4,39 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen User - Sistem Keuangan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex" x-data="{ openCreateModal: false, openEditModal: false, editData: {} }">
+<body class="ctc-admin-layout" x-data="{ openCreateModal: false, openEditModal: false, editData: {} }">
+    @include('admin.partials.layout-start', ['pageTitle' => 'Manajemen pengguna'])
 
-    <!-- Sidebar Integration -->
-    <aside class="w-64 bg-slate-900 text-white min-h-screen flex flex-col justify-between shadow-lg">
-        <div>
-            <div class="px-6 py-5 border-b border-slate-800 flex items-center space-x-3">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-lg">S</div>
-                <span class="font-bold text-lg tracking-wide text-slate-100">SIK & Payroll</span>
-            </div>
-            <nav class="px-4 py-6 space-y-1">
-                <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
-                    Dashboard
-                </a>
-                <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-3 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-sm">
-                    Manajemen User
-                </a>
-            </nav>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
-        <header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center shadow-sm">
-            <h1 class="text-xl font-bold text-gray-800">Manajemen Pengguna (User Management)</h1>
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-800 uppercase">
-                {{ auth()->user()->getRoleNames()->first() ?? 'ADMIN' }}
-            </span>
-        </header>
-
-        <main class="p-8">
+    <section class="ctc-workspace">
             <!-- Alert Notifications -->
             @if(session('success'))
                 <div class="mb-6 p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg text-sm">
@@ -51,7 +25,7 @@
             @endif
 
             <!-- Header Action -->
-            <div class="flex justify-between items-center mb-6">
+            <div class="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <p class="text-sm text-gray-600">Kelola pengguna, hak akses peran (roles), dan informasi gaji dasar.</p>
                 <button @click="openCreateModal = true" class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2.5 rounded-lg transition shadow-sm">
                     + Tambah User Baru
@@ -59,14 +33,14 @@
             </div>
 
             <!-- Tabel Data User -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table class="w-full text-left border-collapse">
+            <div class="ctc-panel overflow-x-auto">
+                <table class="w-full min-w-[48rem] text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase">
                             <th class="py-3 px-6">Nama</th>
                             <th class="py-3 px-6">Email</th>
                             <th class="py-3 px-6">Role Spatie</th>
-                            <th class="py-3 px-6">Gaji Pokok</th>
+                            <th class="py-3 px-6 text-right">Gaji Pokok</th>
                             <th class="py-3 px-6 text-center">Status</th>
                             <th class="py-3 px-6 text-center">Aksi</th>
                         </tr>
@@ -82,7 +56,7 @@
                                         {{ $user->getRoleNames()->first() ?? $user->role }}
                                     </span>
                                 </td>
-                                <td class="py-4 px-6 font-semibold">Rp {{ number_format($user->base_salary, 0, ',', '.') }}</td>
+                                <td class="py-4 px-6 text-right font-semibold tabular-nums">Rp {{ number_format($user->base_salary, 0, ',', '.') }}</td>
                                 <td class="py-4 px-6 text-center">
                                     <span class="px-2.5 py-1 rounded-full text-xs font-medium {{ $user->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                         {{ $user->is_active ? 'Aktif' : 'Non-Aktif' }}
@@ -111,8 +85,8 @@
                     </tbody>
                 </table>
             </div>
-        </main>
-    </div>
+    </section>
+    @include('admin.partials.layout-end')
 
     <!-- Modal Tambah User -->
     <div x-show="openCreateModal" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" x-cloak>

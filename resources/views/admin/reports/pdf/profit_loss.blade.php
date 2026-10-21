@@ -13,7 +13,7 @@
         .header {
             text-align: center;
             margin-bottom: 25px;
-            border-bottom: 2px solid #2d3748;
+            border-bottom: 2px solid #166534;
             padding-bottom: 10px;
         }
         .header h1 {
@@ -46,14 +46,18 @@
             border: 1px solid #cbd5e0;
         }
         .section-header {
-            background-color: #edf2f7;
+            background-color: #f0fdf4;
             font-weight: bold;
             font-size: 11px;
             text-transform: uppercase;
-            color: #2d3748;
+            color: #14532d;
         }
         .text-right {
             text-align: right;
+        }
+        td.text-right {
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
         }
         .text-center {
             text-align: center;
@@ -67,10 +71,10 @@
         .grand-total-row {
             font-weight: bold;
             font-size: 12px;
-            background-color: #ebf8ff;
-            border-top: 2px solid #2b6cb0;
-            border-bottom: 2px solid #2b6cb0;
-            color: #2b6cb0;
+            background-color: #f0fdf4;
+            border-top: 2px solid #166534;
+            border-bottom: 2px solid #166534;
+            color: #14532d;
         }
         .footer-sign {
             margin-top: 40px;

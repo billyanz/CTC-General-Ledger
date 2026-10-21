@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Pengolahan Gaji (Payroll)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @vite('resources/css/app.css')
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
+<body class="ctc-admin-layout">
+    @include('admin.partials.layout-start', ['pageTitle' => 'Penggajian'])
     <div class="max-w-7xl mx-auto space-y-6">
 
         <!-- Header -->
@@ -156,5 +158,6 @@
 
         </div>
     </div>
+    @include('admin.partials.layout-end')
 </body>
 </html>

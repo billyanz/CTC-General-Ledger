@@ -5,14 +5,15 @@
     <title>Laporan Neraca</title>
     <style>
         body { font-family: sans-serif; font-size: 11px; margin: 20px; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #166534; padding-bottom: 10px; }
         .header h2 { margin: 0; text-transform: uppercase; }
         .header p { margin: 3px 0; color: #555; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
-        th { background-color: #f2f2f2; text-transform: uppercase; font-size: 10px; }
+        th, td { border: 1px solid #cbd5e1; padding: 7px 8px; text-align: left; }
+        th { background-color: #f1f5f9; color: #334155; text-transform: uppercase; font-size: 10px; }
         .text-right { text-align: right; }
-        .section-title { font-weight: bold; background-color: #eaeaea; }
+        td.text-right { white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .section-title { font-weight: bold; background-color: #f0fdf4; color: #14532d; }
         .footer-sign { margin-top: 40px; width: 100%; border: none; }
         .footer-sign td { border: none; text-align: center; }
     </style>
