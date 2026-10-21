@@ -84,15 +84,9 @@
                                     <option value="{{ $acc->id }}">{{ $acc->code }} - {{ $acc->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label for="debit-amount" class="mb-1 block text-xs font-medium text-slate-500">Jumlah debit (Rp)</label>
-                                    <input id="debit-amount" type="number" name="items[0][debit]" placeholder="0" class="min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
-                                </div>
-                                <div>
-                                    <label for="debit-credit" class="mb-1 block text-xs font-medium text-slate-500">Kredit</label>
-                                    <input id="debit-credit" type="number" name="items[0][credit]" value="0" readonly aria-label="Kredit baris debit" class="min-h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500">
-                                </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" name="items[0][debit]" placeholder="Debit Rp" class="px-2 py-1 border rounded text-xs font-semibold">
+                                <input type="number" name="items[0][credit]" value="0" readonly class="px-2 py-1 border bg-gray-100 rounded text-xs">
                             </div>
                         </div>
 
@@ -107,15 +101,9 @@
                                     <option value="{{ $acc->id }}">{{ $acc->code }} - {{ $acc->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label for="credit-debit" class="mb-1 block text-xs font-medium text-slate-500">Debit</label>
-                                    <input id="credit-debit" type="number" name="items[1][debit]" value="0" readonly aria-label="Debit baris kredit" class="min-h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500">
-                                </div>
-                                <div>
-                                    <label for="credit-amount" class="mb-1 block text-xs font-medium text-slate-500">Jumlah kredit (Rp)</label>
-                                    <input id="credit-amount" type="number" name="items[1][credit]" placeholder="0" class="min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
-                                </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" name="items[1][debit]" value="0" readonly class="px-2 py-1 border bg-gray-100 rounded text-xs">
+                                <input type="number" name="items[1][credit]" placeholder="Kredit Rp" class="px-2 py-1 border rounded text-xs font-semibold">
                             </div>
                         </div>
                     </fieldset>
@@ -150,40 +138,41 @@
                                 </div>
 
                                 @if($j->status === 'posted')
-                                    <form action="{{ route('admin.journals.reverse', $j->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin melakukan Reversal / Pembatalan pada jurnal ini?');" class="shrink-0">
+                                    <form action="{{ route('admin.journals.reverse', $j->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin melakukan Reversal / Pembatalan pada jurnal ini?');">
                                         @csrf
-                                        <button type="submit" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 transition-colors hover:bg-rose-50 focus:outline-none focus:ring-4 focus:ring-rose-100">
-                                            Reverse / Batal
+                                        <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs px-2.5 py-1 rounded-lg font-medium transition">
+                                            🔄 Reverse / Batal
                                         </button>
                                     </form>
+                                @elseif($j->status === 'reversed')
+                                    <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold uppercase">REVERSED</span>
                                 @endif
                             </div>
 
                             <p class="break-words text-sm font-medium leading-6 text-slate-700">{{ $j->description }}</p>
 
-                            <div class="overflow-x-auto rounded-lg border border-slate-200">
-                                <table class="w-full min-w-[32rem] text-left text-xs">
-                                    <thead class="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+                            <!-- Items Table Detail -->
+                            <table class="w-full text-xs text-left bg-white rounded border">
+                                <thead>
+                                    <tr class="border-b bg-gray-100 text-gray-500 uppercase">
+                                        <th class="py-1.5 px-2">Kode & Akun</th>
+                                        <th class="py-1.5 px-2 text-right">Debit</th>
+                                        <th class="py-1.5 px-2 text-right">Kredit</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    @foreach($j->details as $d)
                                         <tr>
-                                            <th scope="col" class="px-3 py-3 font-semibold">Kode &amp; Akun</th>
-                                            <th scope="col" class="px-3 py-3 text-right font-semibold">Debit</th>
-                                            <th scope="col" class="px-3 py-3 text-right font-semibold">Kredit</th>
+                                            <td class="py-1.5 px-2 {{ $d->credit > 0 ? 'pl-6' : '' }}">
+                                                {{ $d->account->code }} - {{ $d->account->name }}
+                                            </td>
+                                            <td class="py-1.5 px-2 text-right">{{ $d->debit > 0 ? 'Rp ' . number_format($d->debit, 0, ',', '.') : '-' }}</td>
+                                            <td class="py-1.5 px-2 text-right">{{ $d->credit > 0 ? 'Rp ' . number_format($d->credit, 0, ',', '.') : '-' }}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100 bg-white">
-                                        @foreach($j->details as $d)
-                                            <tr class="text-slate-600">
-                                                <td class="max-w-[18rem] break-words px-3 py-3 font-medium {{ $d->credit > 0 ? 'pl-7' : '' }}">
-                                                    {{ $d->account->code }} - {{ $d->account->name }}
-                                                </td>
-                                                <td class="whitespace-nowrap px-3 py-3 text-right tabular-nums">{{ $d->debit > 0 ? 'Rp ' . number_format($d->debit, 0, ',', '.') : '-' }}</td>
-                                                <td class="whitespace-nowrap px-3 py-3 text-right tabular-nums">{{ $d->credit > 0 ? 'Rp ' . number_format($d->credit, 0, ',', '.') : '-' }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </article>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @empty
                         <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-12 text-center">
                             <p class="text-sm font-medium text-slate-600">Belum ada jurnal yang tercatat.</p>
