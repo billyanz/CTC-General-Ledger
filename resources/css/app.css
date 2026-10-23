@@ -273,6 +273,36 @@ textarea:focus-visible {
     padding: 0.875rem 0.75rem;
 }
 
+.ctc-mobile-navigation {
+    display: contents;
+}
+
+.ctc-mobile-navigation > .ctc-navigation {
+    display: flex;
+}
+
+.ctc-mobile-menu-toggle {
+    display: none;
+    cursor: pointer;
+    list-style: none;
+}
+
+.ctc-mobile-menu-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.ctc-menu-close-icon {
+    display: none;
+}
+
+.ctc-mobile-navigation[open] > .ctc-mobile-menu-toggle .ctc-menu-open-icon {
+    display: none;
+}
+
+.ctc-mobile-navigation[open] > .ctc-mobile-menu-toggle .ctc-menu-close-icon {
+    display: block;
+}
+
 .ctc-nav-group {
     margin: 1rem 0 0.25rem;
     padding: 0 0.625rem;
@@ -346,6 +376,65 @@ textarea:focus-visible {
     padding: 0.75rem;
 }
 
+.ctc-user-menu {
+    position: relative;
+    min-width: 0;
+    flex: 1;
+}
+
+.ctc-user-menu-trigger {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.625rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    list-style: none;
+}
+
+.ctc-user-menu-trigger::-webkit-details-marker {
+    display: none;
+}
+
+.ctc-user-menu-trigger:hover .ctc-user-details strong,
+.ctc-user-menu[open] .ctc-user-details strong {
+    color: #17653e;
+}
+
+.ctc-user-menu-chevron {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    margin-left: auto;
+    fill: none;
+    stroke: #819087;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+    transition: transform 120ms ease;
+}
+
+.ctc-user-menu[open] .ctc-user-menu-chevron {
+    transform: rotate(180deg);
+}
+
+.ctc-user-menu-panel {
+    position: absolute;
+    z-index: 40;
+    right: 0;
+    bottom: calc(100% + 0.5rem);
+    min-width: 9rem;
+    padding: 0.375rem;
+    border: 1px solid #dce7e0;
+    border-radius: 0.625rem;
+    background: #fff;
+    box-shadow: 0 8px 24px rgb(20 50 32 / 12%);
+}
+
+.ctc-user-menu-panel form {
+    margin: 0;
+}
+
 .ctc-user-avatar {
     display: grid;
     width: 2rem;
@@ -381,20 +470,24 @@ textarea:focus-visible {
 }
 
 .ctc-logout {
-    display: grid;
-    width: 2rem;
-    height: 2rem;
-    place-items: center;
-    border: 1px solid #e3ebe5;
+    display: flex;
+    width: 100%;
+    min-height: 2.25rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0;
     border-radius: 0.375rem;
     background: #fff;
-    color: #68786e;
+    padding: 0 0.625rem;
+    color: #b42318;
     cursor: pointer;
-    font-size: 0.875rem;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: left;
 }
 
 .ctc-logout:hover {
-    border-color: #f2caca;
     background: #fff5f5;
     color: #b42318;
 }
@@ -686,48 +779,103 @@ textarea:focus-visible {
         position: sticky;
         z-index: 30;
         top: 0;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-rows: auto;
         height: auto;
         border-right: 0;
         border-bottom: 1px solid #dce7e0;
     }
 
     .ctc-brand {
+        grid-column: 2;
+        grid-row: 1;
         min-height: 3.5rem;
         border-bottom: 0;
         padding: 0.625rem 1rem;
     }
 
+    .ctc-mobile-navigation {
+        position: relative;
+        display: block;
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    .ctc-mobile-menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .ctc-navigation {
-        flex: none;
-        flex-direction: row;
-        gap: 0.25rem;
-        overflow-x: auto;
-        overflow-y: hidden;
-        border-top: 1px solid #edf2ee;
-        padding: 0.375rem 0.75rem;
-        scrollbar-width: thin;
+        position: absolute;
+        z-index: 50;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        display: none;
+        width: min(20rem, calc(100vw - 1.5rem));
+        max-height: calc(100dvh - 7rem);
+        flex-direction: column;
+        gap: 0.125rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border: 1px solid #dce7e0;
+        border-radius: 0.75rem;
+        background: #fff;
+        padding: 0.625rem;
+        box-shadow: 0 12px 32px rgb(20 50 32 / 14%);
+        overscroll-behavior: contain;
+    }
+
+    .ctc-mobile-navigation:not([open]) > .ctc-navigation {
+        display: none;
+    }
+
+    .ctc-mobile-navigation[open] > .ctc-navigation {
+        display: flex;
     }
 
     .ctc-nav-group {
-        display: none;
+        display: block;
+        margin: 0.75rem 0 0.25rem;
+        padding: 0 0.625rem;
+    }
+
+    .ctc-nav-group:first-child {
+        margin-top: 0.25rem;
     }
 
     .ctc-nav-link {
-        min-height: 2rem;
+        min-height: 2.5rem;
         flex: 0 0 auto;
-        gap: 0.375rem;
-        padding: 0.375rem 0.625rem;
-        font-size: 0.75rem;
-        white-space: nowrap;
-    }
-
-    .ctc-nav-icon {
-        width: 1rem;
-        height: 1rem;
+        padding: 0.5rem 0.625rem;
+        font-size: 0.8125rem;
     }
 
     .ctc-sidebar-footer {
-        display: none;
+        grid-column: 3;
+        grid-row: 1;
+        min-height: 3.5rem;
+        justify-content: flex-end;
+        border-top: 0;
+        padding: 0.375rem 0.75rem 0.375rem 0;
+    }
+
+    .ctc-user-menu {
+        flex: 0 1 auto;
+    }
+
+    .ctc-user-menu-trigger {
+        min-height: 2.5rem;
+        padding: 0.25rem 0.375rem;
+    }
+
+    .ctc-user-menu-panel {
+        top: calc(100% + 0.375rem);
+        right: 0;
+        bottom: auto;
     }
 
     .ctc-topbar {
@@ -742,6 +890,29 @@ textarea:focus-visible {
 }
 
 @media (max-width: 640px) {
+    .ctc-brand {
+        gap: 0.5rem;
+        padding-left: 0.75rem;
+    }
+
+    .ctc-brand small {
+        font-size: 0.625rem;
+    }
+
+    .ctc-sidebar-footer {
+        gap: 0.375rem;
+        padding-right: 0.625rem;
+    }
+
+    .ctc-user-details {
+        display: none;
+    }
+
+    .ctc-user-menu-trigger {
+        gap: 0.375rem;
+        padding: 0.25rem;
+    }
+
     .ctc-topbar-role {
         padding: 0.25rem 0.5rem;
     }

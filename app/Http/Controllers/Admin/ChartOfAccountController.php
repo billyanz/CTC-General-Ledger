@@ -31,8 +31,7 @@ class ChartOfAccountController extends Controller
             return response()->json(['message' => 'Akun COA berhasil dibuat', 'data' => $coa], 201);
         }
 
-        return redirect()->route('admin.chart-of-accounts.index')
-            ->with('success', 'Akun COA berhasil ditambahkan.');
+        return redirect()->route('chart-of-accounts.index')->with('success', 'Akun COA berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
@@ -54,8 +53,7 @@ class ChartOfAccountController extends Controller
             return response()->json(['message' => 'Akun COA berhasil diperbarui', 'data' => $chartOfAccount]);
         }
 
-        return redirect()->route('admin.chart-of-accounts.index')
-            ->with('success', 'Akun COA berhasil diperbarui.');
+        return redirect()->route('chart-of-accounts.index')->with('success', 'Akun COA berhasil diperbarui.');
     }
 
     public function destroy(Request $request, $id)
@@ -68,7 +66,6 @@ class ChartOfAccountController extends Controller
             return response()->json(['message' => 'Akun COA berhasil dihapus']);
         }
 
-        return redirect()->route('admin.chart-of-accounts.index')
-            ->with('success', 'Akun COA berhasil dihapus.');
+        return redirect()->route('chart-of-accounts.index')->with('success', 'Akun COA berhasil dihapus.');
     }
 }

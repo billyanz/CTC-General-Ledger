@@ -50,7 +50,7 @@
             <div class="flex items-center gap-2 self-end">
                 @if(!empty($reportData['selected_account']))
                     <button onclick="window.print()" class="bg-gray-800 hover:bg-gray-900 text-white text-sm px-4 py-1.5 rounded-lg transition">
-                        🖨️ Cetak PDF
+                        Cetak PDF
                     </button>
                 @endif
                 <a href="{{ route('dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm px-4 py-1.5 rounded-lg transition">

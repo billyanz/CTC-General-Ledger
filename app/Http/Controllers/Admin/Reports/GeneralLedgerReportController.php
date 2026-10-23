@@ -7,6 +7,7 @@ use App\Models\ChartOfAccount;
 use App\Models\JournalDetail;
 use App\Exports\GeneralLedgerExport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -36,8 +37,13 @@ class GeneralLedgerReportController extends Controller
         $endingBalance   = 0;
 
         if ($selectedAccount) {
-            // 1. Hitung Saldo Awal (Saldo sebelum tanggal mulai) - Menggunakan account_id
-            $prevTotals = JournalDetail::where('account_id', $selectedAccount->id)
+            // Deteksi otomatis nama kolom foreign key yang valid di database ('account_id' atau 'chart_of_account_id')
+            $accountColumn = Schema::hasColumn('journal_details', 'account_id') 
+                ? 'account_id' 
+                : 'chart_of_account_id';
+
+            // 1. Hitung Saldo Awal (Opening Balance) sebelum $startDate
+            $totalsPrev = JournalDetail::where($accountColumn, $selectedAccount->id)
                 ->whereHas('journal', function ($q) use ($startDate) {
                     $q->where('journal_date', '<', $startDate)
                       ->where('status', 'posted');
@@ -45,16 +51,16 @@ class GeneralLedgerReportController extends Controller
                 ->selectRaw('SUM(debit) as prev_debit, SUM(credit) as prev_credit')
                 ->first();
 
-            $prevDebit  = $prevTotals->prev_debit ?? 0;
-            $prevCredit = $prevTotals->prev_credit ?? 0;
+            $prevDebit  = $totalsPrev->prev_debit ?? 0;
+            $prevCredit = $totalsPrev->prev_credit ?? 0;
 
             $openingBalance = $selectedAccount->normal_balance === 'debit'
                 ? ($prevDebit - $prevCredit)
                 : ($prevCredit - $prevDebit);
 
-            // 2. Ambil Transaksi pada Periode Pilihan - Menggunakan account_id
+            // 2. Ambil Transaksi Jurnal dalam Rentang Periode
             $journalEntries = JournalDetail::with('journal')
-                ->where('account_id', $selectedAccount->id)
+                ->where($accountColumn, $selectedAccount->id)
                 ->whereHas('journal', function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('journal_date', [$startDate, $endDate])
                       ->where('status', 'posted');

@@ -41,7 +41,6 @@
                 <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role Akun</label>
                 <select id="role" name="role" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                     <option value="">-- Pilih Role --</option>
-                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="akuntan" {{ old('role') == 'akuntan' ? 'selected' : '' }}>Akuntan</option>
                     <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
                 </select>
